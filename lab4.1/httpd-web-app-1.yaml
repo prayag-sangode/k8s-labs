@@ -1,0 +1,61 @@
+---
+# Deployment for Web App 1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-web-app-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: httpd-web-app-1
+  template:
+    metadata:
+      labels:
+        app: httpd-web-app-1
+    spec:
+      containers:
+      - name: httpd-container
+        image: httpd:latest
+        ports:
+        - containerPort: 80
+---
+# ClusterIP Service for Web App 1
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-web-app-1-svc
+spec:
+  selector:
+    app: httpd-web-app-1
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+# Ingress for Web App 1 with HTTPS configuration
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: httpd-web-app-1-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod  # Annotation for Cert-Manager
+spec:
+  ingressClassName: nginx  # Specify the Ingress class
+  rules:
+  - host: rpn-labs.info
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: httpd-web-app-1-svc
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - rpn-labs.info
+    secretName: rpn-labs.info-tls  # Name of the secret for the TLS certificate
