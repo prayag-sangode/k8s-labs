@@ -1,0 +1,22 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-httpd-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    # target Deployment name
+    name: my-httpd
+  minReplicas: 1
+  # maximum number of replicas
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      # scale if target CPU utilization is over 20%
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 40

@@ -1,0 +1,41 @@
+# httpd-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-deployment
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate  # Use RollingUpdate for rolling updates
+    rollingUpdate:
+      maxSurge: 1  # Maximum number of additional pods that can be created during update
+      maxUnavailable: 1  # Maximum number of pods that can be unavailable during update
+  selector:
+    matchLabels:
+      app: httpd-app
+  template:
+    metadata:
+      labels:
+        app: httpd-app
+    spec:
+      containers:
+      - name: httpd-container
+        image: httpd:2.2
+        ports:
+        - containerPort: 80
+
+---
+
+# httpd-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-service
+spec:
+  selector:
+    app: httpd-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

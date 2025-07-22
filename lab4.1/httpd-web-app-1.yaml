@@ -57,5 +57,5 @@ spec:
               number: 80
   tls:
   - hosts:
-    - rpn-labs.info
+    - webapp1.rpn-labs.info
     secretName: webapp1.rpn-labs.info-tls  # Name of the secret for the TLS certificate
