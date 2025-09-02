@@ -1,0 +1,11 @@
+eksctl create cluster \
+  --name my-cluster \
+  --region us-east-1 \
+  --version 1.33 \
+  --nodegroup-name standard-workers \
+  --node-type t2.medium \
+  --nodes 1 \
+  --nodes-min 1 \
+  --nodes-max 1 \
+  --managed \
+  --with-oidc
